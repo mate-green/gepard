@@ -46,7 +46,7 @@ public abstract class Sequence {
         private String lengthAdjusted(final String input) {
             StringBuilder adjusted = new StringBuilder(input);
             while (adjusted.length() != boundary.ceiling().length()) {
-                adjusted.insert(0, boundary.charMap().getValue(0));
+                adjusted.insert(0, boundary.charMap().character(0));
             }
             return adjusted.toString();
         }
@@ -90,8 +90,6 @@ public abstract class Sequence {
         for (int i = 0; i < sequenceId.length(); i++) {
             current = sequenceId.charAt(i);
             boundarySize = boundary.charMap().size();
-            if (boundary.charMap().getKey(current) == null)
-                throw new IllegalArgumentException(String.format("character %c not found in character map", current));
             charDistance = boundary.distanceFromRootChar(current, i);
             accumulator += Math.pow(boundarySize, sequenceId.length() - (i + 1)) * charDistance;
         }

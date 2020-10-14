@@ -10,18 +10,18 @@ class CharMapTest {
     void givenCharVarargsGetKeys() {
         CharMap map = CharMap.of('G', 'A', 'P');
         assertAll("charmap keys",
-                () -> assertEquals(0, map.getKey('G')),
-                () -> assertEquals(1, map.getKey('A')),
-                () -> assertEquals(2, map.getKey('P'))
+                () -> assertEquals(0, map.index('G')),
+                () -> assertEquals(1, map.index('A')),
+                () -> assertEquals(2, map.index('P'))
         );
     }
     @Test
     void givenCharVarargsGetVals() {
         CharMap map = CharMap.of('G', 'A', 'P');
         assertAll("charmap values",
-                () -> assertEquals('G', map.getValue(0)),
-                () -> assertEquals('A', map.getValue(1)),
-                () -> assertEquals('P', map.getValue(2))
+                () -> assertEquals('G', map.character(0)),
+                () -> assertEquals('A', map.character(1)),
+                () -> assertEquals('P', map.character(2))
         );
     }
     @Test
@@ -52,5 +52,10 @@ class CharMapTest {
         CharMap expected = CharMap.NUM_FIRST_THEN_ALPHA;
         CharMap actual = CharMap.defaulted("00A", "ZZZ");
         assertEquals(expected, actual);
+    }
+    @Test
+    void givenCharOutOfCharMapThrowException() {
+        CharMap map = CharMap.of('A', 'B');
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> map.index('D'));
     }
 }

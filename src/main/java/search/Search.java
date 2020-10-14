@@ -49,7 +49,7 @@ public final class Search {
     private String lenghtAdjusted(final String input) {
         StringBuilder adjusted = new StringBuilder(input);
         while (adjusted.length() != boundary.ceiling().length()) {
-            adjusted.insert(0, boundary.charMap().getValue(0));
+            adjusted.insert(0, boundary.charMap().character(0));
         }
         return adjusted.toString();
     }

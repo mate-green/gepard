@@ -2,7 +2,8 @@ package seq;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SequenceTest {
 
@@ -51,18 +52,8 @@ class SequenceTest {
     }
     //TODO test above with custom charsets
     @Test
-    void whenSequenceIdContainsCharOutsideOfCharMapThrowException() {
-        sequence = Sequence.within(new Boundary("000", "999"));
-        assertThrows(IllegalArgumentException.class, () -> sequence.toIndex("AAZ"));
-    }
-    @Test
     void whenSequenceIdIsBAAReturn676() {
         sequence = Sequence.within(new Boundary("AAA", "ZZZ"));
         assertEquals(676, sequence.toIndex("BAA"));
-    }
-    @Test
-    void test() {
-        sequence = Sequence.within(new Boundary("0", "999"));
-        assertEquals(10, sequence.toIndex("10"));
     }
 }

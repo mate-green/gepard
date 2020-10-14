@@ -1,7 +1,5 @@
 package seq;
 
-import java.util.HashMap;
-
 public final class CharMap {
     public static final CharMap NUM =
             CharMap.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -14,31 +12,28 @@ public final class CharMap {
     public static final CharMap ALPHA_FIRST_THEN_NUM =
             CharMap.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                     'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-    private final HashMap<Integer,Character> map;
-    private final HashMap<Character,Integer> invertedMap;
+    private final char[] arr;
 
-    private CharMap(HashMap<Integer, Character> map, HashMap<Character, Integer> invertedMap) {
-        this.map = map;
-        this.invertedMap = invertedMap;
+    private CharMap(final char[] arr) {
+        this.arr = arr;
     }
 
-    public static CharMap of(char ... chars) {
-        HashMap<Integer,Character> map = new HashMap<>();
-        HashMap<Character,Integer> invertedMap = new HashMap<>();
-        for (int i = 0; i < chars.length; i++) {
-            map.put(i, chars[i]);
-            invertedMap.put(chars[i], i);
+    public static CharMap of(final char ... chars) {
+        return new CharMap(chars);
+    }
+    public char character(int index) {
+        return arr[index];
+    }
+    public int index(char character) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == character) {
+                return i;
+            }
         }
-        return new CharMap(map, invertedMap);
-    }
-    public Character getValue(Integer integer) {
-        return map.get(integer);
-    }
-    public Integer getKey(Character character) {
-        return invertedMap.get(character);
+        throw new ArrayIndexOutOfBoundsException(String.format("Character %c is not present in charmap", character));
     }
     public int size() {
-        return this.map.size();
+        return this.arr.length;
     }
     protected static CharMap defaulted(String floor, String ceiling) {
         if (floor.matches("[A-Z]+") && ceiling.matches("[A-Z]+")) {
