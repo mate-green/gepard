@@ -23,6 +23,11 @@ public abstract class Sequence {
         public int toIndex(String sequenceId) {
             return calculateIndex(sequenceId, boundary);
         }
+
+        @Override
+        public boolean isFixed() {
+            return true;
+        }
     }
     public static class Free extends Sequence {
         private final Boundary boundary;
@@ -43,6 +48,12 @@ public abstract class Sequence {
             final String floor = lengthAdjusted(boundary.floor());
             return calculateIndex(sequence, new Boundary(floor, boundary.ceiling()));
         }
+
+        @Override
+        public boolean isFixed() {
+            return false;
+        }
+
         private String lengthAdjusted(final String input) {
             StringBuilder adjusted = new StringBuilder(input);
             while (adjusted.length() != boundary.ceiling().length()) {
@@ -58,27 +69,28 @@ public abstract class Sequence {
     }
     public abstract String toSequenceId(final int index);
     public abstract int toIndex(final String sequenceId);
+    public abstract boolean isFixed();
 
     private static String calculatePosition(final int index, final Boundary boundary) {
         final StringBuilder sb = new StringBuilder();
         char ch;
         int divisor, distance, log, charAt;
         int boundarySize = boundary.charMap().size();
-        System.out.println(boundary.charMap().size());
+        //System.out.println(boundary.charMap().size());
         int accumulator = index;
         log = (int) Math.abs(Math.log(accumulator) / Math.log(boundarySize));
-        System.out.println("log" + log);
+        //System.out.println("log" + log);
         for (int i = log; i >= 0; i--){
             charAt = (boundary.floor().length() - 1) - i;
-            System.out.println("char index" + charAt);
+            //System.out.println("char index" + charAt);
             divisor = (int) Math.pow(boundarySize, i);
-            System.out.println("divisor " + divisor);
+            //System.out.println("divisor " + divisor);
             distance = Math.abs(accumulator / divisor);
-            System.out.println("distance " + distance);
+            //System.out.println("distance " + distance);
             accumulator = accumulator - (distance * divisor);
-            System.out.println("accumulator " + accumulator);
+            //System.out.println("accumulator " + accumulator);
             ch = boundary.calculatedLetterFrom(distance, charAt);
-            System.out.println(ch);
+            //System.out.println(ch);
             sb.append(ch);
         }
         return sb.toString();

@@ -3,6 +3,7 @@ package search;
 import seq.Boundary;
 import seq.Sequence;
 
+import java.util.ArrayList;
 import java.util.List;
 public final class Search {
     private final Boundary boundary;
@@ -10,16 +11,35 @@ public final class Search {
         this.boundary = boundary;
     }
 
-    public String free(List<String> ids) {
+    public String nextOne(final List<String> ids) {
         final Sequence sequence = Sequence.within(boundary);
         return binarySearch(ids, sequence);
     }
-
-    private String binarySearch(List<String> ids, Sequence sequence) {
-        int first = 0;
+    public List<String> nextOnes(final List<String> ids, final int count) {
+       final Sequence sequence = Sequence.within(boundary);
+       List<String> nextOnes = new ArrayList<>();
+       List<String> _ids = new ArrayList<>(ids);
+       int lastSequencePostion = 0;
+        for (int i = 0; i < count; i++) {
+            //System.out.println(_ids);
+            final String last = binarySearch(_ids, sequence, lastSequencePostion);
+            nextOnes.add(last);
+            _ids.add(lastSequencePostion, last);
+            lastSequencePostion = sequence.toIndex(last) + 1;
+        }
+       return nextOnes;
+    }
+    private String binarySearch(final List<String> ids, final Sequence sequence) {
+        return binarySearch(ids, sequence, 0);
+    }
+    private String binarySearch(final List<String> ids, final Sequence sequence, final int _first) {
+        int first = _first;
         int last = ids.size() - 1;
         int middle = (first + last) / 2;
-        if (last < 0 || first != sequence.toIndex(ids.get(0))) {
+        //System.out.println("firstVal: " + first);
+        //System.out.println("middleVal: " + middle);
+        //System.out.println("lastVal: " + last);
+        if (last < 0 || sequence.toIndex(ids.get(0)) != 0) {
             return sequence.toSequenceId(0);
         }
         String lastTried = ids.get(last);
@@ -27,15 +47,12 @@ public final class Search {
             return sequence.toSequenceId(last + 1);
         }
         while (first <= last) {
-//            System.out.println("firstVal: " + first);
-//            System.out.println("middleVal: " + middle);
-//            System.out.println("lastVal: " + last);
-//            System.out.println("List: " + lenghtAdjusted(ids.get(middle)));
-//            System.out.println("Real: " + sequence.toSequenceId(middle));
-            if (lenghtAdjusted(ids.get(middle)).equals(sequence.toSequenceId(middle))) {
+            //System.out.println("List: " + ids.get(middle));
+            //System.out.println("Real: " + sequence.toSequenceId(middle));
+            if (ids.get(middle).equals(sequence.toSequenceId(middle))) {
                 first = middle + 1;
             } else {
-                if (lenghtAdjusted(ids.get(middle - 1)).equals(sequence.toSequenceId(middle - 1))) {
+                if (ids.get(middle - 1).equals(sequence.toSequenceId(middle - 1))) {
                     lastTried = sequence.toSequenceId(middle);
                     break;
                 } else {
@@ -44,19 +61,19 @@ public final class Search {
             }
             middle = (first + last) / 2;
         }
-        return lastTried;
+        return sequence.isFixed()
+                ? lenghtAdjusted(lastTried)
+                : lastTried;
     }
     private String lenghtAdjusted(final String input) {
-        StringBuilder adjusted = new StringBuilder(input);
+        final StringBuilder adjusted = new StringBuilder(input);
         while (adjusted.length() != boundary.ceiling().length()) {
             adjusted.insert(0, boundary.charMap().character(0));
         }
         return adjusted.toString();
     }
-//    private String _free(Sequence s, int size, String lastTried) {
-//        if (size != s.toPosition(lastTried)) {
-//            return s.toSequenceId(size + 1);
-//        }
-//        return _free(s, size/2, )
-//    }
+    public int toPosition(String id) {
+        final Sequence sequence = Sequence.within(boundary);
+        return sequence.toIndex(id);
+    }
 }
