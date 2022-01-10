@@ -22,6 +22,8 @@ public final class CharMap {
         return new CharMap(chars);
     }
     public char character(int index) {
+        if (index >= arr.length)
+                throw new IllegalArgumentException("Index out of array bounds");
         return arr[index];
     }
     public int index(char character) {
@@ -30,7 +32,15 @@ public final class CharMap {
                 return i;
             }
         }
-        throw new ArrayIndexOutOfBoundsException(String.format("Character %c is not present in charmap", character));
+        throw new IllegalArgumentException(String.format("Character %c is not present in CharMap", character));
+    }
+    public boolean contains(char character) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == character) {
+                return true;
+            }
+        }
+        return false;
     }
     public int size() {
         return this.arr.length;

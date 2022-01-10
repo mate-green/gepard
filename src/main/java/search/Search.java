@@ -36,10 +36,10 @@ public final class Search {
         int first = _first;
         int last = ids.size() - 1;
         int middle = (first + last) / 2;
-        //System.out.println("firstVal: " + first);
-        //System.out.println("middleVal: " + middle);
-        //System.out.println("lastVal: " + last);
-        if (last < 0 || sequence.toIndex(ids.get(0)) != 0) {
+        System.out.println("firstVal: " + first);
+        System.out.println("middleVal: " + middle);
+        System.out.println("lastVal: " + last);
+        if (last < 0 || sequence.toIndex(ids.get(0)) != sequence.toIndex(boundary.floor())) {
             return sequence.toSequenceId(0);
         }
         String lastTried = ids.get(last);
@@ -61,9 +61,7 @@ public final class Search {
             }
             middle = (first + last) / 2;
         }
-        return sequence.isFixed()
-                ? lenghtAdjusted(lastTried)
-                : lastTried;
+        return lastTried;
     }
     private String lenghtAdjusted(final String input) {
         final StringBuilder adjusted = new StringBuilder(input);

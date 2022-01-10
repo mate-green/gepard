@@ -10,13 +10,9 @@ public abstract class Sequence {
         @Override
         public String toSequenceId(final int index) {
             if (index == 0) return boundary.floor();
-            StringBuilder sequence = new StringBuilder(Sequence.calculatePosition(index, boundary));
-            int diff;
-            while (boundary.ceiling().length() != sequence.length()) {
-                diff = boundary.ceiling().length() - sequence.length();
-                sequence.insert(0, boundary.floor().charAt(diff - 1));
-            }
-            return sequence.toString();
+            return lengthAdjusted(
+                    Sequence.calculatePosition(index, boundary)
+            );
         }
 
         @Override
@@ -28,6 +24,14 @@ public abstract class Sequence {
         public boolean isFixed() {
             return true;
         }
+
+        public String lengthAdjusted(final String input) {
+            StringBuilder adjusted = new StringBuilder(input);
+            while (adjusted.length() != boundary.ceiling().length()) {
+                adjusted.insert(0, boundary.charMap().character(0));
+            }
+            return adjusted.toString();
+        }
     }
     public static class Free extends Sequence {
         private final Boundary boundary;
@@ -38,31 +42,22 @@ public abstract class Sequence {
         @Override
         public String toSequenceId(final int index) {
             if (index == 0) return boundary.floor();
-            final String floor = lengthAdjusted(boundary.floor());
-            return calculatePosition(index, new Boundary(floor, boundary.ceiling(), boundary.charMap()));
+            return calculatePosition(index, boundary);
         }
 
         @Override
         public int toIndex(final String sequenceId) {
-            final String sequence = lengthAdjusted(sequenceId);
-            final String floor = lengthAdjusted(boundary.floor());
-            return calculateIndex(sequence, new Boundary(floor, boundary.ceiling()));
+            return calculateIndex(sequenceId, boundary);
         }
 
         @Override
         public boolean isFixed() {
             return false;
         }
-
-        private String lengthAdjusted(final String input) {
-            StringBuilder adjusted = new StringBuilder(input);
-            while (adjusted.length() != boundary.ceiling().length()) {
-                adjusted.insert(0, boundary.charMap().character(0));
-            }
-            return adjusted.toString();
-        }
     }
     public static Sequence within(final Boundary boundary) {
+        if (!boundary.isPartOfCharMap())
+            throw new IllegalArgumentException("Boundary is not within the CharMap");
         return boundary.floor().length() != boundary.ceiling().length()
                 ? new Free(boundary)
                 : new Fixed(boundary);
@@ -71,38 +66,49 @@ public abstract class Sequence {
     public abstract int toIndex(final String sequenceId);
     public abstract boolean isFixed();
 
+    private static Boundary newOne(Boundary current) {
+        return new Boundary(
+                    new String(new char[current.floor().length()]).replace('\0', current.charMap().character(0)),
+                    current.ceiling(),
+                    current.charMap()
+                );
+    }
     private static String calculatePosition(final int index, final Boundary boundary) {
         final StringBuilder sb = new StringBuilder();
         char ch;
-        int divisor, distance, log, charAt;
-        int boundarySize = boundary.charMap().size();
-        //System.out.println(boundary.charMap().size());
-        int accumulator = index;
-        log = (int) Math.abs(Math.log(accumulator) / Math.log(boundarySize));
-        //System.out.println("log" + log);
-        for (int i = log; i >= 0; i--){
-            charAt = (boundary.floor().length() - 1) - i;
-            //System.out.println("char index" + charAt);
+        int accumulator, divisor, distance;
+        int floorPosition = calculateIndex(boundary.floor(), newOne(boundary));
+        System.out.println("floorPosition: " + floorPosition);
+        accumulator = index + floorPosition;
+        System.out.println("accumulator " + accumulator);
+        final int boundarySize = boundary.charMap().size();
+        final int log = (int) Math.abs(Math.log(accumulator) / Math.log(boundarySize));
+        System.out.println("log " + log);
+        for (int i = log; i >= 0; i--) {
             divisor = (int) Math.pow(boundarySize, i);
-            //System.out.println("divisor " + divisor);
+            System.out.println("divisor " + divisor);
             distance = Math.abs(accumulator / divisor);
-            //System.out.println("distance " + distance);
-            accumulator = accumulator - (distance * divisor);
-            //System.out.println("accumulator " + accumulator);
-            ch = boundary.calculatedLetterFrom(distance, charAt);
-            //System.out.println(ch);
+            System.out.println("distance " + distance);
+             accumulator = accumulator - (distance * divisor);
+            System.out.println("accumulator " + accumulator);
+            ch = boundary.calculatedCharFrom(distance);
+            System.out.println("result " + ch);
             sb.append(ch);
         }
         return sb.toString();
     }
     private static int calculateIndex(final String sequenceId, final Boundary boundary) {
+        final int difference = boundary.ceiling().length() - boundary.floor().length();
         int boundarySize, charDistance;
-        char current;
+        char current, root;
         int accumulator = 0;
         for (int i = 0; i < sequenceId.length(); i++) {
+            root = difference > i
+                    ? boundary.charMap().character(0)
+                    : boundary.floor().charAt(Math.abs(difference - i));
             current = sequenceId.charAt(i);
             boundarySize = boundary.charMap().size();
-            charDistance = boundary.distanceFromRootChar(current, i);
+            charDistance = boundary.distanceFromRootChar(current, root);
             accumulator += Math.pow(boundarySize, sequenceId.length() - (i + 1)) * charDistance;
         }
         return accumulator;

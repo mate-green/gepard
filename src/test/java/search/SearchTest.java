@@ -2,6 +2,7 @@ package search;
 
 import org.junit.jupiter.api.Test;
 import seq.Boundary;
+import seq.CharMap;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +10,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SearchTest {
     private final Boundary boundary = new Boundary("0", "999");
@@ -43,6 +44,37 @@ class SearchTest {
         assertEquals("998", search.nextOne(seqs));
     }
     @Test
+    void oneBeforeLastIsMissingAlpha() {
+        final Boundary b = new Boundary("A", "ZZZ");
+        final Search s = new Search(b);
+        final List<String> seqs = IntStream.iterate('A', c -> c + 1)
+                .limit(25)
+                .mapToObj(c -> String.valueOf((char) c))
+                .collect(Collectors.toList());
+        assertEquals("Z", s.nextOne(seqs));
+    }
+    @Test
+    void oneBeforeLastIsMissingWhenBoundaryPartial() {
+        final Boundary b = new Boundary("B", "JJ", CharMap.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'));
+        final Search s = new Search(b);
+        final List<String> seqs = IntStream.iterate('A', c -> c + 1)
+                .limit(10)
+                .mapToObj(c -> String.valueOf((char) c))
+                .collect(Collectors.toList());
+        assertEquals("BA", s.nextOne(seqs));
+    }
+    @Test
+    void ceilingUsesCharThatIsNotPresentInCharMapThenThrowsException() {
+        final Boundary b = new Boundary("A", "JZ", CharMap.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'));
+        final Search s = new Search(b);
+        final List<String> seqs = IntStream.iterate('A', c -> c + 1)
+                .limit(10)
+                .mapToObj(c -> String.valueOf((char) c))
+                .collect(Collectors.toList());
+        assertThrows(IllegalArgumentException.class, () -> s.nextOne(seqs));
+    }
+
+    @Test
     void firstSequenceIsMissing() {
         final List<String> seqs = List.of("7");
         assertEquals("0", search.nextOne(seqs));
@@ -57,17 +89,18 @@ class SearchTest {
         Boundary b = new Boundary("A", "ZZZ");
         Search s = new Search(b);
         final List<String> seqs = IntStream.iterate('A', c -> c + 1)
-                .limit(10)
+                .limit(97)
                 .mapToObj(c -> String.valueOf((char) c))
                 .collect(Collectors.toList());
-        assertEquals("K", s.nextOne(seqs));
+        System.out.println(seqs);
+        assertEquals("ES", s.nextOne(seqs));
     }
     @Test
     void addMultiple() {
         final List<String> seqs = Stream.iterate(0, n -> n + 1)
                 .limit(100)
                 .filter(n -> n % 5 != 0)
-                .map(n -> String.valueOf(n))
+                .map(String::valueOf)
                 .collect(Collectors.toList());
         List<String> expected = List.of("0", "5", "10", "15");
         List<String> actual = search.nextOnes(seqs, 4);
@@ -77,5 +110,17 @@ class SearchTest {
     void sequenceToPosition() {
         final int position = search.toPosition("5");
         assertEquals(5, position);
+    }
+    @Test
+    void bla() {
+        Boundary b = new Boundary("21", "999");
+        Search s = new Search(b);
+        final List<String> seqs = Stream.iterate(21, n -> n + 1)
+                .limit(100)
+                .filter(n -> n % 5 != 0)
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+        List<String> expected = List.of("0", "5", "10", "15");
+        assertEquals("25", s.nextOne(seqs));
     }
 }

@@ -1,5 +1,7 @@
 package seq;
 
+import java.util.Arrays;
+
 public final class Boundary {
     private final String floor;
     private final String ceiling;
@@ -24,16 +26,20 @@ public final class Boundary {
     public CharMap charMap() {
         return charMap;
     }
-    protected int distanceFromRootChar(final char character, final int charAt) {
-        final char root = floor.charAt(charAt);
+    protected int distanceFromRootChar(final char character, final char root) {
         return charMap.index(character) - charMap.index(root);
     }
-    protected char calculatedLetterFrom(final int distance, final int charAt) {
-        final char root = this.floor.charAt(charAt);
-        final char top = this.ceiling.charAt(charAt);
-        final int value = charMap.index(root) + distance;
-        if (value > charMap.index(top))
-            throw new IllegalArgumentException(String.format("distance from floor exceeds ceiling value at index %d", charAt));
+    protected char calculatedLetterFrom(final int distance, final int position) {
+        final char ch = floor.charAt(position);
+        final int value = charMap.index(ch) + distance;
         return charMap.character(value);
+    }
+    protected char calculatedCharFrom(final int distance) {
+        final int index = distance - 1;
+        return charMap.character(distance);
+    }
+    public boolean isPartOfCharMap() {
+        return Arrays.stream(floor.split("")).allMatch(s -> charMap.contains(s.charAt(0)))
+                && Arrays.stream(ceiling.split("")).allMatch(s -> charMap.contains(s.charAt(0)));
     }
 }

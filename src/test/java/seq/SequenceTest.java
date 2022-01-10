@@ -23,7 +23,7 @@ class SequenceTest {
     @Test
     void whenSeqIndexWithinFreeBoundariesIs10Return9() {
         sequence = Sequence.within(new Boundary("0", "999"));
-        assertEquals("10", sequence.toSequenceId(10));
+        assertEquals("9", sequence.toSequenceId(10));
     }
     @Test
     void whenSeqIndexWithinFixedBoundariesIs26ReturnABA() {
@@ -41,9 +41,9 @@ class SequenceTest {
         assertEquals("111", sequence.toSequenceId(7));
     }
     @Test
-    void whenSeqIndexIs10WithinFixedBoundariesWithFloorOf111Return121() {
-        sequence = Sequence.within(new Boundary("111", "999"));
-        assertEquals("121", sequence.toSequenceId(10));
+    void whenSeqIndexIs10WithinFixedBoundariesWithFloorOf123Return133() {
+        sequence = Sequence.within(new Boundary("129", "999"));
+        assertEquals("208", sequence.toSequenceId(79));
     }
     @Test
     void whenSeqIndexIsHigherThanCeilingIndexThrowException() {
@@ -53,7 +53,7 @@ class SequenceTest {
     //TODO test above with custom charsets
     @Test
     void whenSequenceIdIsBAAReturn676() {
-        sequence = Sequence.within(new Boundary("AAA", "ZZZ"));
+        sequence = Sequence.within(new Boundary("A", "ZZZ"));
         assertEquals(676, sequence.toIndex("BAA"));
     }
 }
