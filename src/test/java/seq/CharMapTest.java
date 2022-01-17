@@ -56,6 +56,6 @@ class CharMapTest {
     @Test
     void givenCharOutOfCharMapThrowException() {
         CharMap map = CharMap.of('A', 'B');
-        assertThrows(ArrayIndexOutOfBoundsException.class, () -> map.index('D'));
+        assertThrows(IllegalArgumentException.class, () -> map.index('D'));
     }
 }
