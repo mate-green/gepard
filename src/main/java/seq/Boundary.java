@@ -26,16 +26,17 @@ public final class Boundary {
     public CharMap charMap() {
         return charMap;
     }
-    protected int distanceFromRootChar(final char character, final char root) {
+    public int distanceFromRootChar(final char character, final char root) {
         return charMap.index(character) - charMap.index(root);
     }
-    protected char calculatedLetterFrom(final int distance, final int position) {
-        final char ch = floor.charAt(position);
-        final int value = charMap.index(ch) + distance;
-        return charMap.character(value);
+    public static Boundary withRootFloor(final Boundary current) {
+        return new Boundary(
+                new String(new char[current.floor().length()]).replace('\0', current.charMap().character(0)),
+                current.ceiling(),
+                current.charMap()
+        );
     }
-    protected char calculatedCharFrom(final int distance) {
-        final int index = distance - 1;
+    public char calculatedCharFrom(final int distance) {
         return charMap.character(distance);
     }
     public boolean isPartOfCharMap() {

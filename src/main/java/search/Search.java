@@ -19,13 +19,12 @@ public final class Search {
        final Sequence sequence = Sequence.within(boundary);
        List<String> nextOnes = new ArrayList<>();
        List<String> _ids = new ArrayList<>(ids);
-       int lastSequencePostion = 0;
+       int lastSequencePosition = 0;
         for (int i = 0; i < count; i++) {
-            //System.out.println(_ids);
-            final String last = binarySearch(_ids, sequence, lastSequencePostion);
+            final String last = binarySearch(_ids, sequence, lastSequencePosition);
             nextOnes.add(last);
-            _ids.add(lastSequencePostion, last);
-            lastSequencePostion = sequence.toIndex(last) + 1;
+            _ids.add(lastSequencePosition, last);
+            lastSequencePosition = sequence.toIndex(last) + 1;
         }
        return nextOnes;
     }
@@ -36,9 +35,6 @@ public final class Search {
         int first = _first;
         int last = ids.size() - 1;
         int middle = (first + last) / 2;
-        System.out.println("firstVal: " + first);
-        System.out.println("middleVal: " + middle);
-        System.out.println("lastVal: " + last);
         if (last < 0 || sequence.toIndex(ids.get(0)) != sequence.toIndex(boundary.floor())) {
             return sequence.toSequenceId(0);
         }
@@ -47,8 +43,6 @@ public final class Search {
             return sequence.toSequenceId(last + 1);
         }
         while (first <= last) {
-            //System.out.println("List: " + ids.get(middle));
-            //System.out.println("Real: " + sequence.toSequenceId(middle));
             if (ids.get(middle).equals(sequence.toSequenceId(middle))) {
                 first = middle + 1;
             } else {
@@ -62,13 +56,6 @@ public final class Search {
             middle = (first + last) / 2;
         }
         return lastTried;
-    }
-    private String lenghtAdjusted(final String input) {
-        final StringBuilder adjusted = new StringBuilder(input);
-        while (adjusted.length() != boundary.ceiling().length()) {
-            adjusted.insert(0, boundary.charMap().character(0));
-        }
-        return adjusted.toString();
     }
     public int toPosition(String id) {
         final Sequence sequence = Sequence.within(boundary);

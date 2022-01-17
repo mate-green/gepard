@@ -55,7 +55,7 @@ class SearchTest {
     }
     @Test
     void oneBeforeLastIsMissingWhenBoundaryPartial() {
-        final Boundary b = new Boundary("B", "JJ", CharMap.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'));
+        final Boundary b = new Boundary("AA", "JJ", CharMap.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'));
         final Search s = new Search(b);
         final List<String> seqs = IntStream.iterate('A', c -> c + 1)
                 .limit(10)
@@ -89,11 +89,10 @@ class SearchTest {
         Boundary b = new Boundary("A", "ZZZ");
         Search s = new Search(b);
         final List<String> seqs = IntStream.iterate('A', c -> c + 1)
-                .limit(97)
+                .limit(10)
                 .mapToObj(c -> String.valueOf((char) c))
                 .collect(Collectors.toList());
-        System.out.println(seqs);
-        assertEquals("ES", s.nextOne(seqs));
+        assertEquals("K", s.nextOne(seqs));
     }
     @Test
     void addMultiple() {
@@ -112,15 +111,15 @@ class SearchTest {
         assertEquals(5, position);
     }
     @Test
-    void bla() {
-        Boundary b = new Boundary("21", "999");
+    void whenEveryFiveMissingIn100ShouldReturnFirst4Multiples() {
+        Boundary b = new Boundary("0", "999");
         Search s = new Search(b);
-        final List<String> seqs = Stream.iterate(21, n -> n + 1)
+        final List<String> seqs = Stream.iterate(0, n -> n + 1)
                 .limit(100)
                 .filter(n -> n % 5 != 0)
                 .map(String::valueOf)
                 .collect(Collectors.toList());
         List<String> expected = List.of("0", "5", "10", "15");
-        assertEquals("25", s.nextOne(seqs));
+        assertEquals(expected, s.nextOnes(seqs, 4));
     }
 }

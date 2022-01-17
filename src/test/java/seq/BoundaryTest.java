@@ -36,20 +36,20 @@ class BoundaryTest {
     }
     @Test
     void givenDistanceAndIndexCalculateLetterForEachPosition() {
-        boundary = new Boundary("123", "999");
+        boundary = new Boundary("000", "999");
         assertAll("letters from distance",
-                () -> assertEquals('1', boundary.calculatedLetterFrom(0, '1')),
-                () -> assertEquals('3', boundary.calculatedLetterFrom(1, '2')),
-                () -> assertEquals('8', boundary.calculatedLetterFrom(5, '3'))
+                () -> assertEquals('0', boundary.calculatedCharFrom(0)),
+                () -> assertEquals('1', boundary.calculatedCharFrom(1)),
+                () -> assertEquals('5', boundary.calculatedCharFrom(5))
         );
     }
     @Test
     void givenBiggerDistanceFromFloorTharThanAllowedByCeilingThrowException() {
-        boundary = new Boundary("987", "999");
+        boundary = new Boundary("000", "333", CharMap.of('1', '2', '3'));
         assertAll("",
-                () -> assertThrows(IllegalArgumentException.class, () -> boundary.calculatedLetterFrom(1, '9')),
-                () -> assertThrows(IllegalArgumentException.class, () -> boundary.calculatedLetterFrom(2, '8')),
-                () -> assertThrows(IllegalArgumentException.class, () -> boundary.calculatedLetterFrom(3, '7'))
+                () -> assertThrows(IllegalArgumentException.class, () -> boundary.calculatedCharFrom(4)),
+                () -> assertThrows(IllegalArgumentException.class, () -> boundary.calculatedCharFrom(5)),
+                () -> assertThrows(IllegalArgumentException.class, () -> boundary.calculatedCharFrom(6))
         );
     }
 }

@@ -11,13 +11,13 @@ public abstract class Sequence {
         public String toSequenceId(final int index) {
             if (index == 0) return boundary.floor();
             return lengthAdjusted(
-                    Sequence.calculatePosition(index, boundary)
+                    Sequence.calculatedSequence(index, boundary)
             );
         }
 
         @Override
         public int toIndex(String sequenceId) {
-            return calculateIndex(sequenceId, boundary);
+            return calculatedIndex(sequenceId, boundary);
         }
 
         @Override
@@ -42,12 +42,12 @@ public abstract class Sequence {
         @Override
         public String toSequenceId(final int index) {
             if (index == 0) return boundary.floor();
-            return calculatePosition(index, boundary);
+            return calculatedSequence(index, boundary);
         }
 
         @Override
         public int toIndex(final String sequenceId) {
-            return calculateIndex(sequenceId, boundary);
+            return calculatedIndex(sequenceId, boundary);
         }
 
         @Override
@@ -66,38 +66,43 @@ public abstract class Sequence {
     public abstract int toIndex(final String sequenceId);
     public abstract boolean isFixed();
 
-    private static Boundary newOne(Boundary current) {
-        return new Boundary(
-                    new String(new char[current.floor().length()]).replace('\0', current.charMap().character(0)),
-                    current.ceiling(),
-                    current.charMap()
-                );
-    }
-    private static String calculatePosition(final int index, final Boundary boundary) {
-        final StringBuilder sb = new StringBuilder();
+    private static String calculatedSequence(final int position, final Boundary boundary) {
         char ch;
         int accumulator, divisor, distance;
-        int floorPosition = calculateIndex(boundary.floor(), newOne(boundary));
-        System.out.println("floorPosition: " + floorPosition);
-        accumulator = index + floorPosition;
-        System.out.println("accumulator " + accumulator);
+
+        final StringBuilder sb = new StringBuilder();
+        final int floorPosition = calculatedIndex(boundary.floor(), Boundary.withRootFloor(boundary));
+
+        accumulator = position + floorPosition;
+
         final int boundarySize = boundary.charMap().size();
         final int log = (int) Math.abs(Math.log(accumulator) / Math.log(boundarySize));
-        System.out.println("log " + log);
         for (int i = log; i >= 0; i--) {
             divisor = (int) Math.pow(boundarySize, i);
-            System.out.println("divisor " + divisor);
+            //System.out.println("divisor " + divisor);
             distance = Math.abs(accumulator / divisor);
-            System.out.println("distance " + distance);
-             accumulator = accumulator - (distance * divisor);
-            System.out.println("accumulator " + accumulator);
+            //System.out.println("distance " + distance);
+            accumulator = accumulator - (distance * divisor);
+            //System.out.println("accumulator " + accumulator);
             ch = boundary.calculatedCharFrom(distance);
-            System.out.println("result " + ch);
+            //System.out.println("result " + ch);
             sb.append(ch);
         }
-        return sb.toString();
+        final String sequence = sb.toString();
+        if (indexExceedsCeiling(sequence, boundary))
+            throw new IllegalArgumentException("Calculated index exceeds boundary ceiling");
+        return sequence;
     }
-    private static int calculateIndex(final String sequenceId, final Boundary boundary) {
+    private static boolean indexExceedsCeiling(final String input, final Boundary boundary) {
+        return calculatedIndex(input, boundary) > calculatedIndex(boundary.ceiling(), boundary);
+    }
+    private static boolean lengthExceedsCeiling(final String input, final String ceiling) {
+        return input.length() > ceiling.length();
+    }
+    private static int calculatedIndex(final String sequenceId, final Boundary boundary) {
+        if (lengthExceedsCeiling(sequenceId, boundary.ceiling()))
+            throw new IllegalArgumentException("Calculated index exceeds boundary ceiling");
+
         final int difference = boundary.ceiling().length() - boundary.floor().length();
         int boundarySize, charDistance;
         char current, root;
