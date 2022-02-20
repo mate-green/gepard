@@ -1,8 +1,8 @@
-package search;
+package com.matecko.search;
 
+import com.matecko.search.seq.Boundary;
+import com.matecko.search.seq.CharMap;
 import org.junit.jupiter.api.Test;
-import seq.Boundary;
-import seq.CharMap;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,14 +95,32 @@ class SearchTest {
         assertEquals("K", s.nextOne(seqs));
     }
     @Test
-    void addMultiple() {
-        final List<String> seqs = Stream.iterate(0, n -> n + 1)
-                .limit(100)
-                .filter(n -> n % 5 != 0)
+    void whenOneIsMissingInTheRowAndTailIsMissingReturnAllValid_Fixed() {
+        final Boundary b = new Boundary("0000", "9999");
+        final Search s = new Search(b);
+        final List<String> seq = Stream.iterate(0, n -> n + 1)
+                .limit(1550)
+                .filter(n -> n != 1485)
+                .filter(n -> n < 1500)
+                .map(String::valueOf)
+                .map(inp -> "0".repeat(b.floor().length() - inp.length()).concat(inp))
+                .collect(Collectors.toList());
+        List<String> expected = List.of("1485", "1500", "1501", "1502");
+        List<String> actual = s.nextOnes(seq, 4);
+        assertEquals(expected, actual);
+    }
+    @Test
+    void whenOneIsMissingInTheRowAndTailIsMissingReturnAllValid_Free() {
+        final Boundary b = new Boundary("0", "9999");
+        final Search s = new Search(b);
+        final List<String> seq = Stream.iterate(0, n -> n + 1)
+                .limit(1550)
+                .filter(n -> n != 1485)
+                .filter(n -> n < 1500)
                 .map(String::valueOf)
                 .collect(Collectors.toList());
-        List<String> expected = List.of("0", "5", "10", "15");
-        List<String> actual = search.nextOnes(seqs, 4);
+        List<String> expected = List.of("1485", "1500", "1501", "1502");
+        List<String> actual = s.nextOnes(seq, 4);
         assertEquals(expected, actual);
     }
     @Test

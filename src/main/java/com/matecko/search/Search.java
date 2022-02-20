@@ -1,7 +1,7 @@
-package search;
+package com.matecko.search;
 
-import seq.Boundary;
-import seq.Sequence;
+import com.matecko.search.seq.Boundary;
+import com.matecko.search.seq.Sequence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ public final class Search {
         for (int i = 0; i < count; i++) {
             final String last = binarySearch(_ids, sequence, lastSequencePosition);
             nextOnes.add(last);
-            _ids.add(lastSequencePosition, last);
             lastSequencePosition = sequence.toIndex(last) + 1;
+            _ids.add(lastSequencePosition - 1, last);
         }
        return nextOnes;
     }

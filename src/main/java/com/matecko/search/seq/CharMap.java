@@ -1,4 +1,4 @@
-package seq;
+package com.matecko.search.seq;
 
 public final class CharMap {
     public static final CharMap NUM =

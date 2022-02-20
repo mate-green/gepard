@@ -1,4 +1,4 @@
-package seq;
+package com.matecko.search.seq;
 
 import org.junit.jupiter.api.Test;
 

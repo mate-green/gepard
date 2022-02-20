@@ -1,4 +1,4 @@
-package seq;
+package com.matecko.search.seq;
 
 public abstract class Sequence {
     public static class Fixed extends Sequence {

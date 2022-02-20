@@ -1,4 +1,4 @@
-package seq;
+package com.matecko.search.seq;
 
 import java.util.Arrays;
 
