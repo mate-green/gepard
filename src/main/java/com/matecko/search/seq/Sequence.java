@@ -97,7 +97,7 @@ public abstract class Sequence {
     }
     public static int calculatedIndex(final String sequenceId, final Boundary boundary) {
         if (lengthExceedsCeiling(sequenceId, boundary.ceiling()))
-            throw new IllegalArgumentException("Calculated index exceeds boundary ceiling");
+            throw new IllegalArgumentException("Input length exceeds ceiling length");
 
         final int difference = boundary.ceiling().length() - boundary.floor().length();
         int boundarySize, charDistance;
