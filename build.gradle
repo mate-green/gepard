@@ -13,7 +13,7 @@ repositories {
 
 dependencies {
     def junitVer = '5.4.2'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:' + junitVer
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:' + junitVer
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:' + junitVer
 }
 
