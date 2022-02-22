@@ -1,6 +1,5 @@
 package com.matecko.search;
 
-import com.matecko.search.seq.Boundary;
 import com.matecko.search.seq.CharMap;
 import org.junit.jupiter.api.Test;
 
@@ -139,5 +138,14 @@ class SearchTest {
                 .collect(Collectors.toList());
         List<String> expected = List.of("0", "5", "10", "15");
         assertEquals(expected, s.nextOnes(seqs, 4));
+    }
+    @Test
+    void whenSequenceIsFullThenThrowException() {
+        Search s = new Search(new Boundary("0", "10"));
+        final List<String> seq = Stream.iterate(0, n -> n + 1)
+                .limit(11)
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+        assertThrows(IllegalStateException.class, () -> s.nextOne(seq));
     }
 }

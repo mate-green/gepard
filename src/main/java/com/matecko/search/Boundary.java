@@ -1,4 +1,6 @@
-package com.matecko.search.seq;
+package com.matecko.search;
+
+import com.matecko.search.seq.CharMap;
 
 import java.util.Arrays;
 

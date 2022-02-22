@@ -1,6 +1,5 @@
 package com.matecko.search;
 
-import com.matecko.search.seq.Boundary;
 import com.matecko.search.seq.Sequence;
 
 import java.util.ArrayList;
@@ -40,6 +39,9 @@ public final class Search {
         }
         String lastTried = ids.get(last);
         if (last == sequence.toIndex(lastTried)) {
+            final String next = sequence.toSequenceId(last + 1);
+            if (isSequenceFull(next, boundary))
+                throw new IllegalStateException("Sequences are full up to ceiling value");
             return sequence.toSequenceId(last + 1);
         }
         while (first <= last) {
@@ -60,5 +62,8 @@ public final class Search {
     public int toPosition(String id) {
         final Sequence sequence = Sequence.within(boundary);
         return sequence.toIndex(id);
+    }
+    private static boolean isSequenceFull(final String input, final Boundary boundary) {
+        return Sequence.calculatedIndex(input, boundary) > Sequence.calculatedIndex(boundary.ceiling(), boundary);
     }
 }

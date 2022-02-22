@@ -23,7 +23,7 @@ public final class CharMap {
     }
     public char character(int index) {
         if (index >= arr.length)
-                throw new IllegalArgumentException("Index out of array bounds");
+                throw new IllegalArgumentException("Character outside of CharMap");
         return arr[index];
     }
     public int index(char character) {
@@ -35,8 +35,8 @@ public final class CharMap {
         throw new IllegalArgumentException(String.format("Character %c is not present in CharMap", character));
     }
     public boolean contains(char character) {
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == character) {
+        for (char c : arr) {
+            if (c == character) {
                 return true;
             }
         }
@@ -45,7 +45,7 @@ public final class CharMap {
     public int size() {
         return this.arr.length;
     }
-    protected static CharMap defaulted(String floor, String ceiling) {
+    public static CharMap defaulted(String floor, String ceiling) {
         if (floor.matches("[A-Z]+") && ceiling.matches("[A-Z]+")) {
             return CharMap.ALPHA;
         }

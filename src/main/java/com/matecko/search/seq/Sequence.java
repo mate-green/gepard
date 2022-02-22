@@ -1,7 +1,9 @@
 package com.matecko.search.seq;
 
+import com.matecko.search.Boundary;
+
 public abstract class Sequence {
-    public static class Fixed extends Sequence {
+    protected static class Fixed extends Sequence {
         private final Boundary boundary;
         public Fixed(Boundary boundary) {
             this.boundary = boundary;
@@ -33,7 +35,7 @@ public abstract class Sequence {
             return adjusted.toString();
         }
     }
-    public static class Free extends Sequence {
+    protected static class Free extends Sequence {
         private final Boundary boundary;
         public Free(Boundary boundary) {
             this.boundary = boundary;
@@ -88,18 +90,12 @@ public abstract class Sequence {
             //System.out.println("result " + ch);
             sb.append(ch);
         }
-        final String sequence = sb.toString();
-        if (indexExceedsCeiling(sequence, boundary))
-            throw new IllegalArgumentException("Calculated index exceeds boundary ceiling");
-        return sequence;
-    }
-    private static boolean indexExceedsCeiling(final String input, final Boundary boundary) {
-        return calculatedIndex(input, boundary) > calculatedIndex(boundary.ceiling(), boundary);
+        return sb.toString();
     }
     private static boolean lengthExceedsCeiling(final String input, final String ceiling) {
         return input.length() > ceiling.length();
     }
-    private static int calculatedIndex(final String sequenceId, final Boundary boundary) {
+    public static int calculatedIndex(final String sequenceId, final Boundary boundary) {
         if (lengthExceedsCeiling(sequenceId, boundary.ceiling()))
             throw new IllegalArgumentException("Calculated index exceeds boundary ceiling");
 

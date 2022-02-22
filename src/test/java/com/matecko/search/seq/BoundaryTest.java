@@ -1,5 +1,6 @@
 package com.matecko.search.seq;
 
+import com.matecko.search.Boundary;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

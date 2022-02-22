@@ -1,5 +1,6 @@
 package com.matecko.search.seq;
 
+import com.matecko.search.Boundary;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,11 +33,6 @@ class SequenceTest {
     void whenSeqIndexIs8WithinFixedBoundariesWithCustomCharMapOf0And1Return111() {
         sequence = Sequence.within(new Boundary("000", "111", CharMap.of('0', '1')));
         assertEquals("111", sequence.toSequenceId(7));
-    }
-    @Test
-    void whenPositionHigherThanCeilingThrowException() {
-        sequence = Sequence.within(new Boundary("00", "10"));
-        assertThrows(IllegalArgumentException.class, () -> sequence.toSequenceId(12));
     }
     @Test
     void whenSeqIndexIs10WithinFixedBoundariesWithFloorOf129Return208() {
