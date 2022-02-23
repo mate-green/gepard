@@ -1,7 +1,5 @@
 package com.matecko.search.seq;
 
-import com.matecko.search.Boundary;
-
 public abstract class Sequence {
     protected static class Fixed extends Sequence {
         private final Boundary boundary;

@@ -1,5 +1,6 @@
 package com.matecko.search;
 
+import com.matecko.search.seq.Boundary;
 import com.matecko.search.seq.Sequence;
 
 import java.util.ArrayList;

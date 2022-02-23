@@ -1,6 +1,4 @@
-package com.matecko.search;
-
-import com.matecko.search.seq.CharMap;
+package com.matecko.search.seq;
 
 import java.util.Arrays;
 
@@ -25,23 +23,23 @@ public final class Boundary {
         return floor;
     }
 
-    public CharMap charMap() {
+    protected CharMap charMap() {
         return charMap;
     }
-    public int distanceFromRootChar(final char character, final char root) {
+    protected int distanceFromRootChar(final char character, final char root) {
         return charMap.index(character) - charMap.index(root);
     }
-    public static Boundary withRootFloor(final Boundary current) {
+    protected static Boundary withRootFloor(final Boundary current) {
         return new Boundary(
                 new String(new char[current.floor().length()]).replace('\0', current.charMap().character(0)),
                 current.ceiling(),
                 current.charMap()
         );
     }
-    public char calculatedCharFrom(final int distance) {
+    protected char calculatedCharFrom(final int distance) {
         return charMap.character(distance);
     }
-    public boolean isPartOfCharMap() {
+    protected boolean isPartOfCharMap() {
         return Arrays.stream(floor.split("")).allMatch(s -> charMap.contains(s.charAt(0)))
                 && Arrays.stream(ceiling.split("")).allMatch(s -> charMap.contains(s.charAt(0)));
     }

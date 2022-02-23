@@ -1,6 +1,6 @@
 package com.matecko.search.seq;
 
-public final class CharMap {
+public class CharMap {
     public static final CharMap NUM =
             CharMap.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
     public static final CharMap ALPHA =
@@ -21,12 +21,15 @@ public final class CharMap {
     public static CharMap of(final char ... chars) {
         return new CharMap(chars);
     }
-    public char character(int index) {
+    public static CharMap fromArray(final char[] arr) {
+        return new CharMap(arr);
+    }
+    protected char character(int index) {
         if (index >= arr.length)
                 throw new IllegalArgumentException("Character outside of CharMap");
         return arr[index];
     }
-    public int index(char character) {
+    protected int index(char character) {
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == character) {
                 return i;
@@ -34,7 +37,7 @@ public final class CharMap {
         }
         throw new IllegalArgumentException(String.format("Character %c is not present in CharMap", character));
     }
-    public boolean contains(char character) {
+    protected boolean contains(char character) {
         for (char c : arr) {
             if (c == character) {
                 return true;
@@ -42,10 +45,10 @@ public final class CharMap {
         }
         return false;
     }
-    public int size() {
+    protected int size() {
         return this.arr.length;
     }
-    public static CharMap defaulted(String floor, String ceiling) {
+    protected static CharMap defaulted(String floor, String ceiling) {
         if (floor.matches("[A-Z]+") && ceiling.matches("[A-Z]+")) {
             return CharMap.ALPHA;
         }
