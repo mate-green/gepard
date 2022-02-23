@@ -1,5 +1,8 @@
 package com.matecko.search.seq;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CharMap {
     public static final CharMap NUM =
             CharMap.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -21,7 +24,10 @@ public class CharMap {
     public static CharMap of(final char ... chars) {
         return new CharMap(chars);
     }
-    public static CharMap fromArray(final char[] arr) {
+    public static CharMap of(final List<Character> chars) {
+        char[] arr = new char[chars.size()];
+        for (int i = 0; i < chars.size(); i++)
+            arr[i] = chars.get(i);
         return new CharMap(arr);
     }
     protected char character(int index) {
