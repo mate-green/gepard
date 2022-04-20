@@ -1,6 +1,15 @@
 package com.matecko.search.seq;
 
+/**
+ * A sequence
+ */
 public abstract class Sequence {
+    /**
+     * A sequence with fixed length.
+     * <p>
+     *     <strong>Example: </strong> 000, 001, 002 ... 100, 101
+     * </p>
+     */
     protected static class Fixed extends Sequence {
         private final Boundary boundary;
         public Fixed(Boundary boundary) {
@@ -33,6 +42,12 @@ public abstract class Sequence {
             return adjusted.toString();
         }
     }
+    /**
+     * A sequence with free length.
+     * <p>
+     *     <strong>Example: </strong> 0, 1, 2, ... 100, 101
+     * </p>
+     */
     protected static class Free extends Sequence {
         private final Boundary boundary;
         public Free(Boundary boundary) {
@@ -55,6 +70,13 @@ public abstract class Sequence {
             return false;
         }
     }
+
+    /**
+     * Constructs either {@link Fixed} or {@link Free} sequence instance
+     * @param boundary The sequence boundaries
+     * @return new Sequence instance
+     * @throws IllegalArgumentException if boundary contains character that is not part of CharMap
+     */
     public static Sequence within(final Boundary boundary) {
         if (!boundary.isPartOfCharMap())
             throw new IllegalArgumentException("Boundary is not within the CharMap");
@@ -62,8 +84,25 @@ public abstract class Sequence {
                 ? new Free(boundary)
                 : new Fixed(boundary);
     }
+
+    /**
+     * Generates sequence based on its index
+     * @param index distance index from floor boundary
+     * @return string representation of sequence
+     */
     public abstract String toSequenceId(final int index);
+
+    /**
+     * Calculates distance index from floor boundary
+     * @param sequenceId sequence
+     * @return distance index of sequence
+     */
     public abstract int toIndex(final String sequenceId);
+
+    /**
+     * Returns if this instance is a Fixed
+     * @return true, if this is a Fixed, false otherwise
+     */
     public abstract boolean isFixed();
 
     private static String calculatedSequence(final int position, final Boundary boundary) {
@@ -79,13 +118,9 @@ public abstract class Sequence {
         final int log = (int) Math.abs(Math.log(accumulator) / Math.log(boundarySize));
         for (int i = log; i >= 0; i--) {
             divisor = (int) Math.pow(boundarySize, i);
-            //System.out.println("divisor " + divisor);
             distance = Math.abs(accumulator / divisor);
-            //System.out.println("distance " + distance);
             accumulator = accumulator - (distance * divisor);
-            //System.out.println("accumulator " + accumulator);
             ch = boundary.calculatedCharFrom(distance);
-            //System.out.println("result " + ch);
             sb.append(ch);
         }
         return sb.toString();
@@ -93,6 +128,13 @@ public abstract class Sequence {
     private static boolean lengthExceedsCeiling(final String input, final String ceiling) {
         return input.length() > ceiling.length();
     }
+
+    /**
+     * Calculates the index of sequence for boundary defined
+     * @param sequenceId sequence
+     * @param boundary boundary defined
+     * @return calculated index
+     */
     public static int calculatedIndex(final String sequenceId, final Boundary boundary) {
         if (lengthExceedsCeiling(sequenceId, boundary.ceiling()))
             throw new IllegalArgumentException("Input length exceeds ceiling length");
