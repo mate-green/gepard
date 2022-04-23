@@ -124,11 +124,6 @@ class SearchTest {
         assertEquals(expected, actual);
     }
     @Test
-    void sequenceToPosition() {
-        final int position = search.toPosition("5");
-        assertEquals(5, position);
-    }
-    @Test
     void whenEveryFiveMissingIn100ShouldReturnFirst4Multiples() {
         Boundary b = new Boundary("0", "999");
         Search s = new Search(b);

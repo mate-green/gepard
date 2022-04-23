@@ -5,16 +5,38 @@ import com.matecko.search.seq.Sequence;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * A search
+ */
 public final class Search {
     private final Boundary boundary;
+
+    /**
+     * Constructs new Search with boundary provided
+     * @param boundary A sequence boundaries
+     */
     public Search(Boundary boundary) {
         this.boundary = boundary;
     }
 
+    /**
+     * Finds a gap among list of sequences provided
+     * @param ids list of sequences
+     * @return next free sequence
+     * @throws IllegalStateException if list of sequence is full up to ceiling value
+     */
     public String nextOne(final List<String> ids) {
         final Sequence sequence = Sequence.within(boundary);
         return binarySearch(ids, sequence);
     }
+    /**
+     * Finds a gap among list of sequences provided
+     * @param ids list of sequences
+     * @param count count of free sequences
+     * @return next free sequences
+     * @throws IllegalStateException if list of sequence is full up to ceiling value
+     */
     public List<String> nextOnes(final List<String> ids, final int count) {
        final Sequence sequence = Sequence.within(boundary);
        List<String> nextOnes = new ArrayList<>();
@@ -59,10 +81,6 @@ public final class Search {
             middle = (first + last) / 2;
         }
         return lastTried;
-    }
-    public int toPosition(String id) {
-        final Sequence sequence = Sequence.within(boundary);
-        return sequence.toIndex(id);
     }
     private static boolean isSequenceFull(final String input, final Boundary boundary) {
         return Sequence.calculatedIndex(input, boundary) > Sequence.calculatedIndex(boundary.ceiling(), boundary);

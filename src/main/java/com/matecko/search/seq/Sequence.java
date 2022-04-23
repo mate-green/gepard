@@ -4,6 +4,7 @@ package com.matecko.search.seq;
  * A sequence
  */
 public abstract class Sequence {
+    private Sequence() {};
     /**
      * A sequence with fixed length.
      * <p>

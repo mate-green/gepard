@@ -130,9 +130,6 @@ public class CharMap {
         if (floor.matches("[A-Z]+") && ceiling.matches("\\d+")) {
             return CharMap.ALPHA_FIRST_THEN_NUM;
         }
-        if (floor.matches("\\d+") && ceiling.matches("[A-Z]+")) {
-            return CharMap.ALPHA_FIRST_THEN_NUM;
-        }
-        throw new IllegalArgumentException("Failed to create default CharMap. Please provide with your own CharMap instance");
+       return CharMap.NUM_FIRST_THEN_ALPHA;
     }
 }
